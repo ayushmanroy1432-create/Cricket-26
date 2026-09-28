@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>CRICKET 26 — Next Generation</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02060a;color:#fff;font-family:Inter,Arial,sans-serif}
+button{font:inherit;color:inherit;border:0;cursor:pointer}
+#app{width:100vw;height:100vh;position:relative;overflow:hidden;background:#03080d}
+.screen{position:absolute;inset:0;display:none}.screen.active{display:block}
+.bg{position:absolute;inset:0;background:
+radial-gradient(circle at 50% 28%,rgba(0,214,255,.16),transparent 28%),
+linear-gradient(135deg,#07131d,#020509 55%,#091d16)}
+.bg:before{content:"";position:absolute;inset:-30%;background:conic-gradient(from 20deg,transparent 0 22%,rgba(0,229,255,.05) 25%,transparent 31% 55%,rgba(43,255,132,.04) 58%,transparent 64%);animation:spin 18s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.top{position:absolute;left:0;right:0;top:0;height:78px;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;z-index:4;background:linear-gradient(#03080dcc,transparent)}
+.logo{font-size:28px;font-weight:900;letter-spacing:2px}.logo span{color:#00eaff}.tag{font-size:10px;letter-spacing:4px;color:#92a8b5}
+.menu{position:absolute;left:7%;top:22%;width:360px;z-index:3}.menu h1{font-size:54px;line-height:.9;margin:0 0 10px;font-weight:950;letter-spacing:-2px}.menu p{color:#9fb2bd;margin:0 0 28px}
+.menuBtn{width:100%;text-align:left;padding:18px 20px;margin:6px 0;border:1px solid #ffffff12;background:#ffffff08;backdrop-filter:blur(12px);border-radius:8px;transition:.2s;display:flex;justify-content:space-between}
+.menuBtn:hover{transform:translateX(7px);background:#00d9ff18;border-color:#00d9ff66}.menuBtn b{font-size:15px}.menuBtn small{color:#607682}
+.hero{position:absolute;right:0;top:9%;width:61%;height:85%;background:
+linear-gradient(90deg,#02060a 0%,transparent 25%),
+radial-gradient(ellipse at 68% 55%,#0b493e 0%,#061f1c 38%,#03090c 72%);
+clip-path:polygon(22% 0,100% 0,100% 100%,0 100%);overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,transparent 0 50px,#ffffff04 51px 52px);transform:skewX(-10deg)}
+.stadium{position:absolute;bottom:10%;right:5%;width:78%;height:54%;border-radius:50%;border:2px solid #19e5c633;box-shadow:0 0 80px #00eaff18,inset 0 0 80px #00ffb31a}
+.player{position:absolute;right:22%;bottom:7%;width:220px;height:480px;filter:drop-shadow(0 25px 20px #000)}
+.player .head{position:absolute;top:0;left:76px;width:72px;height:72px;border-radius:50%;background:linear-gradient(145deg,#c98e68,#6e3f2c)}
+.player .helmet{position:absolute;top:-8px;left:61px;width:104px;height:62px;border-radius:55px 55px 20px 20px;background:#10171c;border:4px solid #00d8ef}
+.player .body{position:absolute;top:68px;left:43px;width:140px;height:225px;background:linear-gradient(100deg,#ecf2f5,#b9c5cb);clip-path:polygon(18% 0,82% 0,100% 100%,0 100%);border-radius:30px}
+.player .bat{position:absolute;width:24px;height:300px;right:-10px;top:150px;background:linear-gradient(90deg,#d5a85d,#fff1ae,#b87b35);transform:rotate(22deg);border-radius:10px}
+.player .leg{position:absolute;top:275px;width:55px;height:190px;background:#cbd6db;border-radius:20px}.player .l{left:45px}.player .r{left:113px}
+.badge{position:absolute;bottom:7%;left:7%;z-index:2;color:#dcecf3}.badge strong{font-size:70px;display:block;letter-spacing:-5px}.badge span{font-size:11px;letter-spacing:5px;color:#00eaff}
+#match{background:#07120c}
+.stadiumView{position:absolute;inset:0;background:
+radial-gradient(ellipse at 50% 55%,#227c36 0%,#0e5425 32%,#072713 58%,#030807 100%)}
+.pitch{position:absolute;left:50%;top:18%;transform:translateX(-50%);width:25%;height:64%;background:repeating-linear-gradient(90deg,#b89563 0 2px,#c7aa79 3px 7px);border:3px solid #eee0b4;box-shadow:0 0 40px #0008}
+.pitch:before,.pitch:after{content:"";position:absolute;left:8%;right:8%;height:4px;background:#fff}.pitch:before{top:18%}.pitch:after{bottom:18%}
+.grassLines{position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 7%,#ffffff04 7.1% 14%);mix-blend-mode:screen}
+.score{position:absolute;left:20px;right:20px;top:18px;z-index:10;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
+.scorebox{background:#03070bd9;border:1px solid #ffffff18;border-radius:10px;padding:10px 15px;backdrop-filter:blur(10px)}
+.scorebox .team{font-size:12px;color:#9cb0ba}.scorebox .runs{font-size:32px;font-weight:900}.scorebox .runs i{font-size:14px;font-style:normal;color:#7f949f}
+.over{margin-left:8px;font-size:12px;color:#8ea1aa}.clock{font-size:11px;color:#9eb4bd;letter-spacing:2px}
+.commentary{position:absolute;left:20px;bottom:24px;z-index:10;background:#03070bd9;border:1px solid #ffffff16;padding:12px 16px;border-radius:8px;max-width:340px;font-size:13px}
+.controls{position:absolute;right:20px;bottom:20px;z-index:12;display:grid;grid-template-columns:repeat(3,72px);gap:8px}
+.control{height:55px;border-radius:50%;background:#061017cc;border:1px solid #ffffff22;box-shadow:0 5px 18px #0008;font-weight:800;font-size:11px}.control:hover{background:#00d9ff22;border-color:#00d9ff}.control.big{grid-column:2;background:#00b8d91c;border-color:#00d9ff88}
+.shotFX{position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 50%,#fff8,transparent 12%,transparent 40%);z-index:9}
+.flash{animation:flash .3s}.shake{animation:shake .28s}
+@keyframes flash{0%{opacity:0}35%{opacity:1}100%{opacity:0}}@keyframes shake{25%{transform:translate(5px,-3px)}50%{transform:translate(-4px,3px)}75%{transform:translate(3px,2px)}}
+.ball{position:absolute;width:17px;height:17px;border-radius:50%;background:#e52d3f;box-shadow:0 0 14px #ff334c;z-index:7;left:50%;top:38%;display:none}
+.ball.fly{display:block;animation:ballfly .65s ease-out forwards}
+@keyframes ballfly{0%{transform:translate(-50%,-50%) scale(1)}100%{transform:translate(230px,260px) scale(.65)}}
+.pause{position:absolute;inset:0;background:#02070bd9;backdrop-filter:blur(10px);z-index:30;display:none;align-items:center;justify-content:center}.pause.show{display:flex}
+.panel{width:min(520px,90vw);background:#081119f5;border:1px solid #ffffff18;border-radius:16px;padding:28px;box-shadow:0 20px 80px #000}.panel h2{margin:0 0 8px}.panel p{color:#93a8b3}.panel button{width:100%;padding:14px;margin-top:8px;border-radius:8px;background:#ffffff0b;border:1px solid #ffffff18;text-align:left}
+.modal{position:absolute;inset:0;background:#02070bed;z-index:20;display:none;align-items:center;justify-content:center}.modal.show{display:flex}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}.card{padding:18px;background:#ffffff08;border:1px solid #ffffff12;border-radius:10px}.card b{font-size:22px}.card span{display:block;color:#7e959f;font-size:11px;margin-top:5px}
+@media(max-width:700px){.menu{left:7%;top:16%;width:80%}.menu h1{font-size:42px}.hero{opacity:.55;width:100%}.badge{display:none}.controls{grid-template-columns:repeat(3,62px)}.control{height:52px}.pitch{width:42%}.commentary{left:12px;bottom:92px;max-width:270px}.score{left:10px;right:10px}.top{padding:14px}.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="app">
+<section id="home" class="screen active">
+<div class="bg"></div><div class="top"><div class="logo">CRICKET <span>26</span></div><div class="tag">NEXT GENERATION CRICKET ENGINE</div></div>
+<div class="menu">
+<h1>CRICKET<br><span style="color:#00eaff">26</span></h1><p>Ultra-realistic cricket experience • Dynamic stadiums • Precision batting</p>
+<button class="menuBtn" onclick="startMatch()"><b>QUICK MATCH</b><small>PLAY NOW →</small></button>
+<button class="menuBtn" onclick="showModes()"><b>GAME MODES</b><small>EXPLORE</small></button>
+<button class="menuBtn" onclick="showSettings()"><b>GRAPHICS & SETTINGS</b><small>4K / PERFORMANCE</small></button>
+</div>
+<div class="hero"><div class="stadium"></div><div class="player"><div class="helmet"></div><div class="head"></div><div class="body"></div><div class="bat"></div><div class="leg l"></div><div class="leg r"></div></div></div>
+<div class="badge"><strong>4K</strong><span>VISUAL EXPERIENCE</span></div>
+</section>
+
+<section id="match" class="screen">
+<div class="stadiumView"></div><div class="grassLines"></div><div class="pitch"></div>
+<div class="score"><div class="scorebox"><div class="team">INDIA • T20</div><div class="runs" id="score">0/0 <i>(0.0)</i></div></div><div class="scorebox"><div class="clock" id="quality">ULTRA • 4K MODE</div><div style="font-size:12px;margin-top:8px;color:#9bb">TARGET 184</div></div></div>
+<div class="ball" id="ball"></div><div class="shotFX" id="fx"></div>
+<div class="commentary" id="commentary">Ready. Press a shot when the ball arrives.</div>
+<div class="controls">
+<button class="control" onclick="shot('cut')">CUT<br>◀</button><button class="control" onclick="shot('drive')">DRIVE<br>▲</button><button class="control" onclick="shot('loft')">LOFT<br>◆</button>
+<button class="control" onclick="shot('defend')">DEFEND</button><button class="control big" onclick="bowl()">SHOT</button><button class="control" onclick="shot('sweep')">SWEEP</button>
+<button class="control" onclick="shot('pull')">PULL</button><button class="control" onclick="pauseGame()">Ⅱ</button><button class="control" onclick="backHome()">EXIT</button>
+</div>
+<div class="pause" id="pause"><div class="panel"><h2>PAUSED</h2><p>Match simulation is paused.</p><button onclick="pauseGame()">RESUME</button><button onclick="backHome()">QUIT TO MENU</button></div></div>
+</section>
+
+<div class="modal" id="modes"><div class="panel"><h2>GAME MODES</h2><div class="cards"><div class="card"><b>QUICK</b><span>Fast T20 match</span></div><div class="card"><b>CAREER</b><span>Build your cricket story</span></div><div class="card"><b>WORLD</b><span>International tournament</span></div></div><button onclick="closeModal()">BACK</button></div></div>
+<div class="modal" id="settings"><div class="panel"><h2>GRAPHICS</h2><p>Choose a rendering profile for your device.</p><div class="cards"><div class="card" onclick="setQuality('4K ULTRA')"><b>4K</b><span>Maximum detail</span></div><div class="card" onclick="setQuality('1440P HIGH')"><b>HIGH</b><span>Balanced</span></div><div class="card" onclick="setQuality('1080P PERFORMANCE')"><b>PERF</b><span>Higher FPS</span></div></div><button onclick="closeModal()">BACK</button></div></div>
+</div>
+<script>
+let runs=0,wickets=0,balls=0,paused=false,quality='4K ULTRA',waiting=false;
+const $=id=>document.getElementById(id);
+function startMatch(){show('match');runs=0;wickets=0;balls=0;update();$("commentary").textContent="First delivery coming up… Tap SHOT, then choose your stroke."}
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active')}
+function backHome(){show('home');$("pause").classList.remove('show')}
+function showModes(){$("modes").classList.add('show')}function showSettings(){$("settings").classList.add('show')}
+function closeModal(){document.querySelectorAll('.modal').forEach(x=>x.classList.remove('show'))}
+function setQuality(q){quality=q;$("quality").textContent=q+" • ACTIVE";closeModal()}
+function update(){$("score").innerHTML=runs+"/"+wickets+" <i>("+(Math.floor(balls/6))+"."+(balls%6)+")</i>"}
+function bowl(){
+ if(paused||waiting)return;
+ waiting=true;
+ const b=$("ball");b.classList.remove('fly');void b.offsetWidth;b.classList.add('fly');
+ $("commentary").textContent="Bowler in… time your shot!";
+ setTimeout(()=>{waiting=false;$("commentary").textContent="Ball is in the hitting zone — choose your shot!";},600);
+}
+function shot(type){
+ if(paused||waiting)return;
+ waiting=true;
+ const outcomes={cut:[4,6,1,0],drive:[4,2,1,0,4,6],loft:[6,4,0,6],defend:[0,1,0,0],sweep:[4,2,1,0,4],pull:[6,4,2,0,6]};
+ const arr=outcomes[type]||[1];const r=arr[Math.floor(Math.random()*arr.length)];
+ const f=$("fx");f.classList.remove('flash');void f.offsetWidth;f.classList.add('flash');
+ document.getElementById('match').classList.remove('shake');void document.getElementById('match').offsetWidth;document.getElementById('match').classList.add('shake');
+ balls++;
+ if(r===0 && Math.random()<.14){wickets++;$("commentary").textContent="OUT! Excellent bowling — wicket falls."}
+ else{runs+=r;const text=r===6?"SIX! Massive hit into the stands.":r===4?"FOUR! Beautifully timed.":r===0?"DOT BALL.":r+" run"+(r>1?"s":"")+" — good running."; $("commentary").textContent=text}
+ update();
+ setTimeout(()=>{waiting=false;if(wickets<10) bowl();else $("commentary").textContent="Innings complete.";},700);
+}
+function pauseGame(){paused=!paused;$("pause").classList.toggle('show',paused)}
+document.addEventListener('keydown',e=>{
+ if($("match").classList.contains('active')){
+  if(e.code==='Space'){e.preventDefault();bowl()}
+  if(e.key==='1')shot('cut');if(e.key==='2')shot('drive');if(e.key==='3')shot('loft');
+  if(e.key==='4')shot('defend');if(e.key==='5')shot('sweep');if(e.key==='6')shot('pull');
+  if(e.key==='Escape')pauseGame();
+ }
+});
+</script>
+</body>
+</html>
